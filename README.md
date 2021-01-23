@@ -1,6 +1,7 @@
 # Ibex-FastScale
-FastScale is a controller for the online psycholinguistic experiment platform Ibex. It is the variation of the Scale controller which allows participant to respond with only one mouse movement and click. A demo can be found [here](https://ibex.spellout.net/experiments/emmanuel/FastScale%20example/view).
+FastScale is a controller for the online psycholinguistic experiment platform Ibex. It is a variation of the Scale controller which allows participant to respond with only one mouse movement and click. A demo can be found [here](https://ibex.spellout.net/experiments/emmanuel/FastScale%20example/view).
 
+**Important:** This controller is designed for use with a mouse or a trackpad. It works very poorly with touchscreens.
 
 FastScale uses the following parameters:
 
