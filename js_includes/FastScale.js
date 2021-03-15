@@ -103,8 +103,10 @@ name: "FastScale",
 jqueryWidget: {
     _init: function () {
         var self = this;
-
+      
+      
         this.utils = this.options._utils;
+console.log(this.utils.getValuesFromPreviousElement());
 
         this.cssPrefix = this.options._cssPrefix;
         this.finishedCallback = this.options._finishedCallback;
@@ -119,15 +121,17 @@ jqueryWidget: {
         this.endValue = this.options.endValue||100;
         assert(typeof(this.endValue) == "number", "'endValue' option must be a number");
       
-        this.scaleLabels = this.options.scaleLabels
+        this.scaleLabels = this.options.scaleLabels;
         
         if(this.scaleLabels){
           assert(this.scaleLabels == "numeric"||(Array.isArray(this.scaleLabels)&&this.scaleLabels.length>=2), "'scaleLabels' option must be null, the string 'numeric', or an array of length 2 giving the left and right labels as strings.");
           this.leftLabel = (this.scaleLabels=="numeric" ? this.startValue.toFixed(this.decimalPlaces) : this.scaleLabels[0]);
           this.rightLabel = (this.scaleLabels=="numeric" ? this.endValue.toFixed(this.decimalPlaces) : this.scaleLabels[1]);
         }
-
-
+      
+        this.setFlag = function(currentFraction) {
+          this.utils.setValueForNextElement("previousFraction", currentFraction);
+        }
         
         this.$html = htmlCodeToDOM(this.html);
         this.element.append($("<div>").addClass(this.cssPrefix + 'html').append(this.$html));
@@ -169,9 +173,9 @@ jqueryWidget: {
             this.$rightLabel.text(this.rightLabel);
         }
         this.element.append($bar);
-
+      
         this.handleLeft = parseInt(this.scaleWidth / 2);
-        this.fraction = 0.5;
+      this.fraction = this.utils.getValueFromPreviousElement("previousFraction") || 0.5;
         t();
         function t() {
             self.setHandlePos();
@@ -243,6 +247,7 @@ jqueryWidget: {
     handleMouseClick: function () {
         var val = (this.fraction * (this.endValue - this.startValue)) + this.startValue;
         console.log("VAL", val);
+        this.setFlag(this.fraction);
         this.finishedCallback([[
             ["html", csv_url_encode(this.$html.innerHTML)],
             ["startValue", this.startValue.toFixed(this.decimalPlaces)],
@@ -259,6 +264,7 @@ jqueryWidget: {
           value = value < 0? 0: value
           self.forceFraction(value/100);
           self.setHandlePos();
+          
         });
 
         self.safeBind($(document), 'mousedown', function (e) {
