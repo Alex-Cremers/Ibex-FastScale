@@ -106,7 +106,6 @@ jqueryWidget: {
       
       
         this.utils = this.options._utils;
-console.log(this.utils.getValuesFromPreviousElement());
 
         this.cssPrefix = this.options._cssPrefix;
         this.finishedCallback = this.options._finishedCallback;
