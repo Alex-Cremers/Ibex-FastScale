@@ -103,12 +103,16 @@ name: "FastScale",
 jqueryWidget: {
     _init: function () {
         var self = this;
-      
-      
+        
         this.utils = this.options._utils;
 
         this.cssPrefix = this.options._cssPrefix;
         this.finishedCallback = this.options._finishedCallback;
+
+        if (typeof window.performance == 'object' && typeof window.performance.now == 'function')
+            this.now = function () { return window.performance.now(); };
+        else
+            this.now = function () { return new Date().getTime(); };
 
         this.html = this.options.html;
         this.decimalPlaces = (this.options.decimalPlaces == null ? 0 : this.options.decimalPlaces);
@@ -174,7 +178,7 @@ jqueryWidget: {
         this.element.append($bar);
       
         this.handleLeft = parseInt(this.scaleWidth / 2);
-      this.fraction = this.utils.getValueFromPreviousElement("previousFraction") || 0.5;
+      this.fraction = this.utils.getValueFromPreviousElement("previousFraction") ?? 0.5;
         t();
         function t() {
             self.setHandlePos();
@@ -186,6 +190,8 @@ jqueryWidget: {
         this.safeBind($(window), 'resize', function (e) {
             self.setHandlePos();
         });
+	// Store the time when this was first displayed.
+        this.creationTime = this.now();
     },
     getBarO: function () {
         var barO = this.$bar.offset();
@@ -245,13 +251,14 @@ jqueryWidget: {
 
     handleMouseClick: function () {
         var val = (this.fraction * (this.endValue - this.startValue)) + this.startValue;
-        console.log("VAL", val);
-        this.setFlag(this.fraction);
+	      var answerTime = this.now();
+	      this.setFlag(this.fraction);
         this.finishedCallback([[
             ["html", csv_url_encode(this.$html.innerHTML)],
-            ["startValue", this.startValue.toFixed(this.decimalPlaces)],
-            ["endValue", this.endValue.toFixed(this.decimalPlaces)],
-            ["value", val.toFixed(this.decimalPlaces)]
+            ["startValue (lowest value on the slider)", this.startValue.toFixed(this.decimalPlaces)],
+            ["endValue (highest value on the slider)", this.endValue.toFixed(this.decimalPlaces)],
+            ["value (slider position between startValue and endValue)", val.toFixed(this.decimalPlaces)],
+            ["time taken to answer", answerTime - this.creationTime]
         ]]);
     },
     setupFollowMouse: function () {

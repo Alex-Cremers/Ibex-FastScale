@@ -24,3 +24,9 @@ handleHeight|30|Height of the handle, in `px`.
 The controller records the `html`, `startValue`, and `endValue` inputs, as well as `value`, which corresponds to the position where the participant moved the handle before clicking. `value` is recorded with `decimalPlaces` decimals.
 
 **March 2021 update:** FastScale now passes the position of the handle to the next controller. If the next item is a FastScale too, its handle starts where it was in the previous item. This does not work if a Separator appears between the two (e.g., if using `sepWith()` in the shuffle sequence).
+
+**December 2025 update:** New feature and improvements:
+  - FastScale now records the time taken to answer
+  - fixed a bug where the previous position was not passed to the next item if the slider was all the way to the left
+  - improved the description of the results file
+  - removed a console.log() of the value
